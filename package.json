@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "node-starter",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node server.js",
+    "local": "nodemon run local",
+    "test": "mocha"
+  },
+  "author": {
+    "name": "Chris Montgomery"
+  },
+  "dependencies": {
+    "adaro": "1.0.4",
+    "body-parser": "1.15.1",
+    "bunyan": "1.8.1",
+    "bunyan-format": "0.2.1",
+    "compression": "1.6.2",
+    "cookie-parser": "1.4.3",
+    "cors": "2.7.1",
+    "express": "4.13.4",
+    "glob": "7.0.3",
+    "morgan": "1.7.0",
+    "nconf": "0.8.4"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "nodemon": "^1.9.2",
+    "should": "^9.0.0",
+    "supertest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "license": "ISC"
+}
