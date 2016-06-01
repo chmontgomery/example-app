@@ -24,6 +24,9 @@ module.exports = () => {
   app.use(bodyParser.json());
   app.use(compression());
 
+  // make all static files available under /public route
+  app.use('/public', express.static(path.join(__dirname, '../public')));
+
   app.use('/_health', (req, res) => res.end('ok'));
   app.use('/favicon.ico', (req, res) => res.end());
   app.get('/', indexHandler);

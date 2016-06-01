@@ -1,8 +1,7 @@
 {>"layouts/main"/}
 
 {<body}
-  <div class="container">
-    <h1>{message}</h1>
-  </div>
-  {>"partials/footer"/}
+  <div id="mount"></div>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <script src="/public/main.js"></script>
 {/body}

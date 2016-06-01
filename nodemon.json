@@ -1,6 +1,9 @@
 {
   "ignore": [
-    "node_modules/*"
+    "*.test.js",
+    "node_modules/*",
+    "src/content/*",
+    "public/*"
   ],
   "ext": "dust js json"
 }
