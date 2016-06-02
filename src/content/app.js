@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const moment = require('moment');
 
 const SideBar = React.createClass({
   render() {
@@ -49,24 +50,49 @@ const BodyContent = React.createClass({
         </span>
       );
     });
+    var location;
+    if (userInfo.location) {
+      location = (
+        <div>
+          <i className="fa fa-map-marker"></i>
+          &nbsp;&nbsp;{userInfo.location}
+        </div>
+      )
+    }
+    var email;
+    if (userInfo.email) {
+      email = (
+        <div>
+          <i className="fa fa-envelope"></i>
+          &nbsp;&nbsp;{userInfo.email}
+        </div>
+      )
+    }
     return (
       <div>
-        <h1><img alt={activeUser.login}
-                 height="48"
-                 width="48"
-                 src={activeUser.avatar_url}/>&nbsp;&nbsp;
-          <a href={activeUser.html_url}>{activeUser.login}</a></h1>
         <div>
-          <dl>
-            <dt>Join Date</dt>
-            <dd>{userInfo.created_at}</dd>
-            <dt>Location</dt>
-            <dd>{userInfo.location}</dd>
-            <dt>Email</dt>
-            <dd>{userInfo.email}</dd>
-            <dt>Organizations</dt>
-            <dd>{orgs}</dd>
-          </dl>
+          <a href={activeUser.html_url}>
+            <img alt={activeUser.login}
+                 height="230"
+                 width="230"
+                 src={activeUser.avatar_url}/>
+          </a>
+        </div>
+        <h1>
+          <div className="card-fullname">{userInfo.name}</div>
+          <div className="card-username">{activeUser.login}</div>
+        </h1>
+        <div className="info-block">
+          {location}
+          <div>
+            <i className="fa fa-clock-o"></i>
+            &nbsp;&nbsp;Joined on {moment(userInfo.created_at).format('MMM Do, YYYY')}
+          </div>
+          {email}
+        </div>
+        <div className="info-block">
+          <div className="card-orgname">Organizations</div>
+          <div>{orgs}</div>
         </div>
       </div>
     );
@@ -115,7 +141,7 @@ const App = React.createClass({
           <div className="col-xs-2" id="leftcolumn">
             <SideBar users={this.state.users} activeUser={this.state.activeUser} selectUser={this.selectUser}/>
           </div>
-          <div className="col-xs-10">
+          <div className="col-xs-10" style={{'padding-top':'15px'}}>
             <BodyContent activeUser={this.state.activeUser}
                          activeUserInfo={this.state.activeUserInfo}
                          activeUserOrgs={this.state.activeUserOrgs}/>

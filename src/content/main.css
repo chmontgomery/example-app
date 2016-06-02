@@ -44,3 +44,25 @@
 .navbar {
   min-width: 124px;
 }
+.card-fullname {
+  font-size: 26px;
+  line-height: 30px;
+}
+.card-username {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 24px;
+  color: #666;
+}
+.card-orgname {
+  font-weight: bold;
+  font-size: 15px;
+  padding-bottom: 8px;
+}
+.info-block {
+  border-top: 1px #e5e5e5 solid;
+  max-width: 230px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

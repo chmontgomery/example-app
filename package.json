@@ -25,6 +25,7 @@
     "express": "4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
     "glob": "7.0.3",
+    "moment": "^2.13.0",
     "morgan": "1.7.0",
     "nconf": "0.8.4",
     "react": "^15.1.0",
