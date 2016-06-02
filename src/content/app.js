@@ -21,7 +21,7 @@ const SideBar = React.createClass({
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="#">Code42</a>
+            <a className="navbar-brand" href="/">Code42</a>
           </div>
 
           <div className="collapse navbar-collapse navbar-ex1-collapse">
