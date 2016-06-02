@@ -52,6 +52,10 @@
   background: #eee;
 }
 
+.sidebar-title a:active, .sidebar-title a:focus {
+  text-decoration: none;
+}
+
 .content {
   padding: 20px 20px 20px 250px;
 }

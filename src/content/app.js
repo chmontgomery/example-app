@@ -26,6 +26,14 @@ const BodyContent = React.createClass({
     const userInfo = this.props.activeUserInfo;
     const userOrgs = this.props.activeUserOrgs;
 
+    if (this.props.loading) {
+      return (
+        <div>
+          loading...
+        </div>
+      )
+    }
+
     if (!userInfo.login) {
       return (
         <p>
@@ -98,7 +106,8 @@ const App = React.createClass({
     return {
       users: [],
       activeUserInfo: {},
-      activeUserOrgs: []
+      activeUserOrgs: [],
+      loading: false
     };
   },
   // onPageLoad
@@ -130,13 +139,24 @@ const App = React.createClass({
         activeUserOrgs: []
       });
     }
+    self.setState({
+      loading: true
+    });
+    // abort any previous requests
+    if (self.userReq)
+      self.userReq.abort();
+    if (self.userOrgReq)
+      self.userOrgReq.abort();
     self.userReq = $.get('https://api.github.com/users/' + username);
     self.userOrgReq = $.get('https://api.github.com/users/' + username + '/orgs');
     $.when(self.userReq, self.userOrgReq).done(function (r1, r2) {
-      self.setState({
-        activeUserInfo: r1[0],
-        activeUserOrgs: r2[0]
-      });
+      //setTimeout(() => {
+        self.setState({
+          activeUserInfo: r1[0],
+          activeUserOrgs: r2[0],
+          loading: false
+        });
+      //}, 2000);
     });
   },
   render() {
@@ -147,7 +167,8 @@ const App = React.createClass({
         </div>
         <div className="content">
           <BodyContent activeUserInfo={this.state.activeUserInfo}
-                       activeUserOrgs={this.state.activeUserOrgs}/>
+                       activeUserOrgs={this.state.activeUserOrgs}
+                       loading={this.state.loading}/>
         </div>
       </div>
     );
