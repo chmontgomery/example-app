@@ -41,6 +41,6 @@
   padding-left: 0;
   padding-right: 0;
 }
-#leftcolumn {
-  padding-bottom: 100%; margin-bottom: -100%;
+.navbar {
+  min-width: 124px;
 }

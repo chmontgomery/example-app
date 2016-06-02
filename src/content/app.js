@@ -4,7 +4,11 @@ const ReactDOM = require('react-dom');
 const SideBar = React.createClass({
   render() {
     var rows = this.props.users.map((user) => {
-      return (<li key={user.id}><a href="#" onClick={this.props.selectUser.bind(null,user)}>{user.login}</a></li>);
+      return (
+        <li key={user.id} className={this.props.activeUser.id === user.id ? 'active': ''}>
+          <a href="#" onClick={this.props.selectUser.bind(null,user)}>{user.login}</a>
+        </li>
+      );
     });
     return (
       <div>
@@ -16,7 +20,7 @@ const SideBar = React.createClass({
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="#">Code42 Org</a>
+            <a className="navbar-brand" href="#">Code42</a>
           </div>
 
           <div className="collapse navbar-collapse navbar-ex1-collapse">
@@ -32,44 +36,77 @@ const SideBar = React.createClass({
 
 const BodyContent = React.createClass({
   render() {
+    var activeUser = this.props.activeUser;
+    var userInfo = this.props.activeUserInfo;
+    var userOrgs = this.props.activeUserOrgs;
+    var orgs = userOrgs.map((org) => {
+      return (
+        <span key={org.id}>
+          <img alt={org.login}
+               height="42"
+               width="42"
+               src={org.avatar_url}/>
+        </span>
+      );
+    });
     return (
       <div>
-        <h1>booya</h1>
-        <p>
-          This example will automatically dock the sidebar if the page
-          width is above 800px (which is currently).
-        </p>
-        <p>
-          This functionality should live in the component that renders the sidebar.
-          This way you're able to modify the sidebar and main content based on the
-          responsiveness data. For example, the menu button in the header of the
-          content is now  because the sidebar
-          is  visible.
-        </p>
+        <h1><img alt={activeUser.login}
+                 height="48"
+                 width="48"
+                 src={activeUser.avatar_url}/>&nbsp;&nbsp;
+          <a href={activeUser.html_url}>{activeUser.login}</a></h1>
+        <div>
+          <dl>
+            <dt>Join Date</dt>
+            <dd>{userInfo.created_at}</dd>
+            <dt>Location</dt>
+            <dd>{userInfo.location}</dd>
+            <dt>Email</dt>
+            <dd>{userInfo.email}</dd>
+            <dt>Organizations</dt>
+            <dd>{orgs}</dd>
+          </dl>
+        </div>
       </div>
     );
   }
 });
 
 const App = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       users: [],
-      activeUser: {}
+      activeUser: {},
+      activeUserInfo: {},
+      activeUserOrgs: []
     };
   },
-  componentDidMount: function() {
-    this.serverRequest = $.get(this.props.source, function (result) {
+  componentDidMount: function () {
+    this.requestAllUsers = $.get(this.props.source, function (result) {
       this.setState({
         users: result
       });
     }.bind(this));
   },
-  componentWillUnmount: function() {
-    this.serverRequest.abort();
+  componentWillUnmount: function () {
+    this.requestAllUsers.abort();
+    this.userReq.abort();
+    this.userOrgReq.abort();
   },
-  selectUser: function(user) {
-    console.log('yolo', user)
+  selectUser: function (user) {
+    var self = this;
+    self.setState({
+      activeUser: user
+    });
+    self.userReq = $.get('https://api.github.com/users/' + user.login);
+    self.userOrgReq = $.get('https://api.github.com/users/' + user.login + '/orgs');
+    $.when(self.userReq, self.userOrgReq).done(function (r1, r2) {
+      self.setState({
+        activeUserInfo: r1[0],
+        activeUserOrgs: r2[0]
+      });
+    });
   },
   render() {
     return (
@@ -79,7 +116,9 @@ const App = React.createClass({
             <SideBar users={this.state.users} activeUser={this.state.activeUser} selectUser={this.selectUser}/>
           </div>
           <div className="col-xs-10">
-            <BodyContent/>
+            <BodyContent activeUser={this.state.activeUser}
+                         activeUserInfo={this.state.activeUserInfo}
+                         activeUserOrgs={this.state.activeUserOrgs}/>
           </div>
         </div>
       </div>
@@ -87,4 +126,6 @@ const App = React.createClass({
   }
 });
 
-ReactDOM.render(<App source="https://api.github.com/orgs/code42/members"/>, document.getElementById('mount'));
+ReactDOM.render(
+  <App source="https://api.github.com/orgs/code42/members"/>
+  , document.getElementById('mount'));
