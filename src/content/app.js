@@ -1,46 +1,40 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const moment = require('moment');
+import React, { Component } from 'react'
+import { render } from 'react-dom'
+import { browserHistory, Router, Route, Link } from 'react-router'
+import moment from 'moment';
 
-const SideBar = React.createClass({
+class SideBar extends Component {
   render() {
-    var rows = this.props.users.map((user) => {
-      return (
-        <li key={user.id} className={this.props.activeUser.id === user.id ? 'active': ''}>
-          <a href="#" onClick={this.props.selectUser.bind(null,user)}>{user.login}</a>
-        </li>
-      );
-    });
     return (
-      <div>
-        <nav className="navbar navbar-default" role="navigation">
-          <div className="navbar-header">
-            <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-              <span className="sr-only">Toggle navigation</span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-            </button>
-            <a className="navbar-brand" href="/">Code42</a>
-          </div>
-
-          <div className="collapse navbar-collapse navbar-ex1-collapse">
-            <ul className="nav navbar-nav">
-              {rows}
-            </ul>
-          </div>
-        </nav>
+      <div className="sidebar-nav">
+        <div className="sidebar-title"><Link to={'/'}>Code42</Link></div>
+        <ul>
+          {this.props.users.map((user, i) => (
+            <li key={i}>
+              <Link to={`/${user.login}`}>{user.login}</Link>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
-});
+}
 
 const BodyContent = React.createClass({
   render() {
-    var activeUser = this.props.activeUser;
-    var userInfo = this.props.activeUserInfo;
-    var userOrgs = this.props.activeUserOrgs;
-    var orgs = userOrgs.map((org) => {
+
+    const userInfo = this.props.activeUserInfo;
+    const userOrgs = this.props.activeUserOrgs;
+
+    if (!userInfo.login) {
+      return (
+        <p>
+          Choose a user from the left...
+        </p>
+      )
+    }
+
+    const orgs = userOrgs.map((org) => {
       return (
         <span key={org.id}>
           <img alt={org.login}
@@ -71,16 +65,16 @@ const BodyContent = React.createClass({
     return (
       <div>
         <div>
-          <a href={activeUser.html_url}>
-            <img alt={activeUser.login}
+          <a href={userInfo.html_url}>
+            <img alt={userInfo.login}
                  height="230"
                  width="230"
-                 src={activeUser.avatar_url}/>
+                 src={userInfo.avatar_url}/>
           </a>
         </div>
         <h1>
           <div className="card-fullname">{userInfo.name}</div>
-          <div className="card-username">{activeUser.login}</div>
+          <div className="card-username">{userInfo.login}</div>
         </h1>
         <div className="info-block">
           {location}
@@ -100,33 +94,44 @@ const BodyContent = React.createClass({
 });
 
 const App = React.createClass({
-  getInitialState: function () {
+  getInitialState() {
     return {
       users: [],
-      activeUser: {},
       activeUserInfo: {},
       activeUserOrgs: []
     };
   },
-  componentDidMount: function () {
-    this.requestAllUsers = $.get(this.props.source, function (result) {
+  // onPageLoad
+  componentDidMount() {
+    this.requestAllUsers = $.get("https://api.github.com/orgs/code42/members", function (result) {
       this.setState({
         users: result
       });
     }.bind(this));
+    if (this.props.params['username'])
+      this.selectUser(this.props.params['username']);
   },
-  componentWillUnmount: function () {
+  // onRouteChange
+  componentWillReceiveProps(nextProps) {
+    // TODO if not diff from prev, do nothing
+    if (nextProps)
+      this.selectUser(nextProps.params['username']);
+  },
+  componentWillUnmount() {
     this.requestAllUsers.abort();
     this.userReq.abort();
     this.userOrgReq.abort();
   },
-  selectUser: function (user) {
-    var self = this;
-    self.setState({
-      activeUser: user
-    });
-    self.userReq = $.get('https://api.github.com/users/' + user.login);
-    self.userOrgReq = $.get('https://api.github.com/users/' + user.login + '/orgs');
+  selectUser(username) {
+    let self = this;
+    if (!username) {
+      return self.setState({
+        activeUserInfo: {},
+        activeUserOrgs: []
+      });
+    }
+    self.userReq = $.get('https://api.github.com/users/' + username);
+    self.userOrgReq = $.get('https://api.github.com/users/' + username + '/orgs');
     $.when(self.userReq, self.userOrgReq).done(function (r1, r2) {
       self.setState({
         activeUserInfo: r1[0],
@@ -136,22 +141,23 @@ const App = React.createClass({
   },
   render() {
     return (
-      <div className="container-fluid">
-        <div className="row-fluid">
-          <div className="col-xs-2" id="leftcolumn">
-            <SideBar users={this.state.users} activeUser={this.state.activeUser} selectUser={this.selectUser}/>
-          </div>
-          <div className="col-xs-10" style={{'padding-top':'15px'}}>
-            <BodyContent activeUser={this.state.activeUser}
-                         activeUserInfo={this.state.activeUserInfo}
-                         activeUserOrgs={this.state.activeUserOrgs}/>
-          </div>
+      <div>
+        <div className="sidebar">
+          <SideBar users={this.state.users}/>
+        </div>
+        <div className="content">
+          <BodyContent activeUserInfo={this.state.activeUserInfo}
+                       activeUserOrgs={this.state.activeUserOrgs}/>
         </div>
       </div>
     );
   }
 });
 
-ReactDOM.render(
-  <App source="https://api.github.com/orgs/code42/members"/>
+render(
+  <Router history={browserHistory}>
+    <Route path="/" component={App}>
+      <Route path=":username" component={BodyContent}/>
+    </Route>
+  </Router>
   , document.getElementById('mount'));

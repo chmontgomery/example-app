@@ -30,6 +30,7 @@ module.exports = () => {
   app.use('/_health', (req, res) => res.end('ok'));
   app.use('/favicon.ico', (req, res) => res.end());
   app.get('/', indexHandler);
+  app.get('/:username', indexHandler);
 
   // catch 404 and forward to error handler
   app.use((req, res, next) => {

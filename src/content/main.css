@@ -1,53 +1,70 @@
-@media (min-width: 768px) {
-  .navbar-collapse {
-    height: auto;
-    border-top: 0;
-    box-shadow: none;
-    max-height: none;
-    padding-left:0;
-    padding-right:0;
-  }
-  .navbar-collapse.collapse {
-    display: block !important;
-    width: auto !important;
-    padding-bottom: 0;
-    overflow: visible !important;
-  }
-  .navbar-collapse.in {
-    overflow-x: visible;
-  }
-
-  .navbar
-  {
-    max-width:300px;
-    margin-right: 0;
-    margin-left: 0;
-  }
-
-  .navbar-nav,
-  .navbar-nav > li,
-  .navbar-left,
-  .navbar-right,
-  .navbar-header
-  {float:none !important;}
-
-  .navbar-right .dropdown-menu {left:0;right:auto;}
-  .navbar-collapse .navbar-nav.navbar-right:last-child {
-    margin-right: 0;
-  }
+.sidebar {
+  float: left;
+  background: #fff;
+  width: 200px;
+  cursor: pointer;
+  border-right: #eee 1px solid;
 }
 
-#leftcolumn, .container-fluid{
-  padding-left: 0;
-  padding-right: 0;
+.sidebar-nav a {
+  color: black;
+  font-weight: bold;
 }
-.navbar {
-  min-width: 124px;
+
+.sidebar-nav a:hover {
+  text-decoration: none;
+  background: #eee;
 }
+
+.sidebar-nav ul {
+  list-style-type: none;
+  -webkit-padding-start: 0;
+}
+
+.sidebar-nav ul li {
+  list-style-type: none;
+  width: 100%;
+}
+
+.sidebar-nav ul li a {
+  width: 100%;
+  display: block;
+  padding: 10px 0 10px 40px;
+}
+
+.sidebar-nav ul li a:active, .sidebar-nav ul li a:focus {
+  text-decoration: none;
+}
+
+.sidebar-title {
+  font-size: 30px;
+  text-align: center;
+}
+
+.sidebar-title a {
+  width: 100%;
+  padding: 20px 0;
+  display: block;
+}
+
+.sidebar-title a:hover {
+  text-decoration: none;
+  background: #eee;
+}
+
+.content {
+  padding: 20px 20px 20px 250px;
+}
+
+a {
+  text-decoration: none;
+}
+
 .card-fullname {
   font-size: 26px;
   line-height: 30px;
 }
+
 .card-username {
   font-size: 20px;
   font-style: normal;
@@ -55,11 +72,13 @@
   line-height: 24px;
   color: #666;
 }
+
 .card-orgname {
   font-weight: bold;
   font-size: 15px;
   padding-bottom: 8px;
 }
+
 .info-block {
   border-top: 1px #e5e5e5 solid;
   max-width: 230px;
