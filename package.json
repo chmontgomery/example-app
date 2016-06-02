@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run bundle & NODE_ENV=production node server.js",
     "local": "nodemon run local & npm run watch",
     "test": "mocha",
     "watch": "webpack -d --watch",
     "bundle-dev": "webpack -d",
-    "bundle": "webpack -p"
+    "bundle": "webpack -p --define process.env.NODE_ENV='\"production\"'"
   },
   "author": {
     "name": "Chris Montgomery"
