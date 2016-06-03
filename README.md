@@ -8,6 +8,7 @@ Production: `NODE_ENV=production npm start`
 
 # Possible Future Enhancements
 
+1. notify user of errors hitting the github api
 1. proxy all github requests through server so as to avoid github's public rate limit (60 rph)
 1. use css extension language (e.g. sass)
 1. host css/js in cdn for stability and availability
