@@ -18,7 +18,7 @@ describe('index', () => {
 
   it('should show error page', (done) => {
     request(require('../src/app')())
-      .get('/this-path-does-not-exist')
+      .get('/asdf/this-path-does-not-exist')
       .expect('Content-Type', /text\/html/)
       .expect(404)
       .end((err, res) => {
@@ -31,7 +31,7 @@ describe('index', () => {
   it('should show error page in prod', (done) => {
     process.env.NODE_ENV = 'production';
     request(require('../src/app')())
-      .get('/this-path-does-not-exist')
+      .get('/adsf/this-path-does-not-exist')
       .expect('Content-Type', /text\/html/)
       .expect(404)
       .end((err, res) => {
