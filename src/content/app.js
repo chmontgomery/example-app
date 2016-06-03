@@ -5,6 +5,18 @@ import moment from 'moment';
 
 class SideBar extends Component {
   render() {
+    if (this.props.usersLoading) {
+      return (
+        <div className="sidebar-nav">
+          <div className="sidebar-title"><Link to={'/'}>Code42</Link></div>
+          <ul>
+            <li>
+              <a>loading users...</a>
+            </li>
+          </ul>
+        </div>
+      )
+    }
     return (
       <div className="sidebar-nav">
         <div className="sidebar-title"><Link to={'/'}>Code42</Link></div>
@@ -26,7 +38,7 @@ const BodyContent = React.createClass({
     const userInfo = this.props.activeUserInfo;
     const userOrgs = this.props.activeUserOrgs;
 
-    if (this.props.loading) {
+    if (this.props.loading || this.props.usersLoading) {
       return (
         <div>
           loading...
@@ -107,14 +119,16 @@ const App = React.createClass({
       users: [],
       activeUserInfo: {},
       activeUserOrgs: [],
-      loading: false
+      loading: false,
+      usersLoading: true
     };
   },
   // onPageLoad
   componentDidMount() {
     this.requestAllUsers = $.get("https://api.github.com/orgs/code42/members", function (result) {
       this.setState({
-        users: result
+        users: result,
+        usersLoading: false
       });
     }.bind(this));
     if (this.props.params['username'])
@@ -151,11 +165,11 @@ const App = React.createClass({
     self.userOrgReq = $.get('https://api.github.com/users/' + username + '/orgs');
     $.when(self.userReq, self.userOrgReq).done(function (r1, r2) {
       //setTimeout(() => {
-        self.setState({
-          activeUserInfo: r1[0],
-          activeUserOrgs: r2[0],
-          loading: false
-        });
+      self.setState({
+        activeUserInfo: r1[0],
+        activeUserOrgs: r2[0],
+        loading: false
+      });
       //}, 2000);
     });
   },
@@ -163,12 +177,13 @@ const App = React.createClass({
     return (
       <div>
         <div className="sidebar">
-          <SideBar users={this.state.users}/>
+          <SideBar users={this.state.users} usersLoading={this.state.usersLoading}/>
         </div>
         <div className="content">
           <BodyContent activeUserInfo={this.state.activeUserInfo}
                        activeUserOrgs={this.state.activeUserOrgs}
-                       loading={this.state.loading}/>
+                       loading={this.state.loading}
+                       usersLoading={this.state.usersLoading}/>
         </div>
       </div>
     );
